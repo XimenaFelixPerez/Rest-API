@@ -15,7 +15,7 @@ const getUserById = async (req, res) => {
         const pool = await getConnection();
         const result = await pool.request()
             .input('id', sql.Int, req.params.id)
-            .query('SELECT * FROM UsuariosAPI WHERE idUsuarios = @id');
+            .query('SELECT idUsuarios, Nombre, Apellido, Email FROM UsuariosAPI WHERE idUsuarios = @id');
         res.json(result.recordset[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -33,7 +33,9 @@ const createUser = async (req, res) => {
             .input('apellido', sql.VarChar, apellido)
             .input('email', sql.VarChar, email)
             .input('password', sql.VarChar, password)
-            .query('INSERT INTO dbo.UsuariosAPI (idUsuarios, Nombre, Apellido, Email, Password) VALUES (@idUsuarios, @nombre, @apellido, @email, @password)');
+            .query(`INSERT INTO dbo.UsuariosAPI (idUsuarios, Nombre, Apellido, Email, Password)
+                    SELECT ISNULL(MAX(idUsuarios), 0) + 1, @nombre, @apellido, @email, @password
+                    FROM dbo.UsuariosAPI`);
         res.status(201).json({ message: 'Usuario creado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
