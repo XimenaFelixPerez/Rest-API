@@ -18,10 +18,8 @@ const login = async (req, res) => {
             });
         }
 
-        res.json({
-            message: 'Login exitoso',
-            user : userSinPassword
-        });
+        const { Password: _, ...userSinPassword } = user;
+        res.json({ message: 'Login exitoso', user: userSinPassword });
 
     } catch (error) {
         console.error('ERROR LOGIN:', error);

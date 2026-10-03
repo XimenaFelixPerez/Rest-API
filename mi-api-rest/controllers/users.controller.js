@@ -23,8 +23,7 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-
-    const { idUsuarios, nombre, apellido, email, password } = req.body;
+    const { nombre, apellido, email, password } = req.body;
     const nombreCompleto = `${nombre || ''} ${apellido || ''}`.trim();
     try {
         const pool = await getConnection();
@@ -32,15 +31,14 @@ const createUser = async (req, res) => {
             .input('nombre', sql.VarChar, nombreCompleto)
             .input('correo', sql.VarChar, email)
             .input('password', sql.VarChar, password)
-            .query(`INSERT INTO dbo.UsuariosAPI (Id, Nombre, Correo, Password)
-                    SELECT ISNULL(MAX(Id), 0) + 1, @nombre, @correo, @password
-                    FROM dbo.UsuariosAPI`);
+            .query(`INSERT INTO dbo.UsuariosAPI (Nombre, Correo, Password)
+                    VALUES (@nombre, @correo, @password)`);
         res.status(201).json({ message: 'Usuario creado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-
 };
+
 
 const updateUser = async (req, res) => {
     const { nombre, email } = req.body;
