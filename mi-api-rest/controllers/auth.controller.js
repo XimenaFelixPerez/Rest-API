@@ -7,8 +7,8 @@ const login = async (req, res) => {
         const pool = await getConnection();
 
         const result = await pool.request()
-            .input('Email', sql.VarChar, Email)
-            .query('SELECT * FROM UsuariosAPI WHERE Email = @Email');
+            .input('Correo', sql.VarChar, Email)
+            .query('SELECT * FROM UsuariosAPI WHERE Correo = @Correo');
 
         const user = result.recordset[0];
 
@@ -20,7 +20,7 @@ const login = async (req, res) => {
 
         res.json({
             message: 'Login exitoso',
-            user
+            user : userSinPassword
         });
 
     } catch (error) {
