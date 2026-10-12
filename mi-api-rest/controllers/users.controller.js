@@ -1,4 +1,5 @@
 const { getConnection, sql } = require('../db');
+const { hashPassword } = require('../utils/hash');
 
 const getUsers = async (req, res) => {
     try {
@@ -30,7 +31,7 @@ const createUser = async (req, res) => {
         await pool.request()
             .input('nombre', sql.VarChar, nombreCompleto)
             .input('correo', sql.VarChar, email)
-            .input('password', sql.VarChar, password)
+            .input('password', sql.VarChar, hashPassword(password))
             .query(`INSERT INTO dbo.UsuariosAPI (Nombre, Correo, Password)
                     VALUES (@nombre, @correo, @password)`);
         res.status(201).json({ message: 'Usuario creado' });

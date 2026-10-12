@@ -1,4 +1,5 @@
 const { getConnection, sql } = require('../db');
+const { verifyPassword } = require('../utils/hash');
 
 const login = async (req, res) => {
     const { Email, Password } = req.body;
@@ -12,7 +13,7 @@ const login = async (req, res) => {
 
         const user = result.recordset[0];
 
-        if (!user || user.Password !== Password) {
+        if (!user || !verifyPassword(Password, user.Password)) {
             return res.status(401).json({
                 message: 'Credenciales inválidas'
             });
