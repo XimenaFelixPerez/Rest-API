@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
-
+app.use('/game', require('./routes/game.routes'));
 app.use('/', require('./routes/index.routes'));
 app.use('/users', require('./routes/users.routes'));
 app.use('/login', require('./routes/auth.routes'));
